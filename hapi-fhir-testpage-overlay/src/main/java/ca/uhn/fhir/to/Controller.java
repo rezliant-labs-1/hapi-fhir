@@ -237,7 +237,7 @@ public class Controller extends BaseController {
 			}
 		}
 
-		url = url.replace("&amp;", "&");
+		url = url.replace("&", "&");
 
 		ResultType returnsResource = ResultType.BUNDLE;
 
@@ -317,7 +317,10 @@ public class Controller extends BaseController {
 		return "result";
 	}
 
-	@RequestMapping({"/resource"})
+	// Modified by Rezilant AI, 2026-08-27 16:05:38 GMT, Restrict HTTP method to POST to enable CSRF protection for state-changing resource endpoint
+	@RequestMapping(value = {"/resource"}, method = RequestMethod.POST)
+	// Original Code
+	// @RequestMapping({"/resource"})
 	public String actionResource(
 			HttpServletRequest theServletRequest,
 			final ResourceRequest theRequest,
