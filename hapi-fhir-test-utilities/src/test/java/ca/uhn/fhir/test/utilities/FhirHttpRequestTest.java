@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.ContentType;
 import org.hl7.fhir.r4.model.Patient;
@@ -174,13 +175,23 @@ class FhirHttpRequestTest {
 
 			String requestBody = IOUtils.toString(theRequest.getInputStream(), StandardCharsets.UTF_8);
 			theResponse.setContentType("text/plain");
+			// Modified by Rezilant AI, 2026-08-27 16:08:39 GMT, HTML-escape dynamic content to prevent XSS injection
 			theResponse
 					.getWriter()
-					.write("method=" + theRequest.getMethod() + "\nauthorization="
-							+ theRequest.getHeader(Constants.HEADER_AUTHORIZATION) + "\ncontentType="
-							+ stripCharset(theRequest.getContentType()) + "\nprefer="
-							+ theRequest.getHeader(Constants.HEADER_PREFER) + "\ncustom="
-							+ theRequest.getHeader("X-Custom") + "\nbody=" + requestBody);
+					.write("method=" + StringEscapeUtils.escapeHtml4(theRequest.getMethod()) 
+						+ "\nauthorization=" + StringEscapeUtils.escapeHtml4(theRequest.getHeader(Constants.HEADER_AUTHORIZATION))
+						+ "\ncontentType=" + StringEscapeUtils.escapeHtml4(stripCharset(theRequest.getContentType()))
+						+ "\nprefer=" + StringEscapeUtils.escapeHtml4(theRequest.getHeader(Constants.HEADER_PREFER))
+						+ "\ncustom=" + StringEscapeUtils.escapeHtml4(theRequest.getHeader("X-Custom"))
+						+ "\nbody=" + StringEscapeUtils.escapeHtml4(requestBody));
+			// Original Code
+			// theResponse
+			// 		.getWriter()
+			// 		.write("method=" + theRequest.getMethod() + "\nauthorization="
+			// 				+ theRequest.getHeader(Constants.HEADER_AUTHORIZATION) + "\ncontentType="
+			// 				+ stripCharset(theRequest.getContentType()) + "\nprefer="
+			// 				+ theRequest.getHeader(Constants.HEADER_PREFER) + "\ncustom="
+			// 				+ theRequest.getHeader("X-Custom") + "\nbody=" + requestBody);
 		}
 
 		private String stripCharset(String theContentType) {
