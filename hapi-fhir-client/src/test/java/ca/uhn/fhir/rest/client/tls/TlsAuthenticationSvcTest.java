@@ -5,7 +5,9 @@ import ca.uhn.fhir.tls.KeyStoreInfo;
 import ca.uhn.fhir.tls.TlsAuthentication;
 import ca.uhn.fhir.tls.TrustStoreInfo;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
+// Modified by Rezilant AI, 2026-08-27 16:08:37 GMT, Removed insecure NoopHostnameVerifier import to enforce proper hostname verification
+// Original Code
+// import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -148,7 +150,10 @@ public class TlsAuthenticationSvcTest {
 	public void testCreateHostnameVerifierEmptyTrustStoreInfo(){
 		Optional<TrustStoreInfo> trustStoreInfo = Optional.empty();
 		HostnameVerifier result = TlsAuthenticationSvc.createHostnameVerifier(trustStoreInfo);
-		assertEquals(NoopHostnameVerifier.class, result.getClass());
+		// Modified by Rezilant AI, 2026-08-27 16:08:37 GMT, Updated test to expect DefaultHostnameVerifier for proper hostname verification
+		// Original Code
+		// assertEquals(NoopHostnameVerifier.class, result.getClass());
+		assertEquals(DefaultHostnameVerifier.class, result.getClass());
 	}
 
 	@Test
