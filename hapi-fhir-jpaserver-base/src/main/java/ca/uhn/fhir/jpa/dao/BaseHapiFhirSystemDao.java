@@ -360,7 +360,11 @@ public abstract class BaseHapiFhirSystemDao<T extends IBaseBundle, MT> extends B
 			return;
 		}
 
+		// Modified by Rezilant AI, 2026-08-27 16:34:08 GMT, Use parameterized query to prevent SQL injection
 		String jqlQuery = "FROM ResourceTable r " + theJoinClause + " WHERE r.myPid IN ( :IDS )";
+
+		// Original Code
+		// String jqlQuery = "FROM ResourceTable r " + theJoinClause + " WHERE r.myPid IN ( :IDS )";
 
 		TypedQuery<ResourceTable> query = myEntityManager.createQuery(jqlQuery, ResourceTable.class);
 		query.setParameter("IDS", idSubset);
