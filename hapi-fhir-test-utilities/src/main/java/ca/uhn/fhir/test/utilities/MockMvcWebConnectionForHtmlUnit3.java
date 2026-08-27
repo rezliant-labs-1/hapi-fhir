@@ -194,7 +194,11 @@ public final class MockMvcWebConnectionForHtmlUnit3 implements WebConnection {
 			Cookie toManage = createCookie(cookie);
 			Date expires = toManage.getExpires();
 			if (expires == null || expires.after(now)) {
+				// Modified by Rezilant AI, 2026-08-27 16:08:40 GMT, Set HttpOnly flag to prevent XSS attacks on session cookies
+				toManage.setHttpOnly(true);
 				cookieManager.addCookie(toManage);
+				// Original Code
+				//cookieManager.addCookie(toManage);
 			}
 			else {
 				cookieManager.removeCookie(toManage);
