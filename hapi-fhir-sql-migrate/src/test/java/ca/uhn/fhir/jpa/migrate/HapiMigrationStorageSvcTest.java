@@ -87,9 +87,20 @@ class HapiMigrationStorageSvcTest extends BaseMigrationTest {
 		}
 	}
 
+	// Modified by Rezilant AI, 2026-08-27 16:05:42 GMT, Secured SQL query by using constant table name to prevent potential SQL injection
+	// Original Code
+	//private int countRecords() {
+	//	JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource());
+	//	return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM " + BaseMigrationTest.TABLE_NAME, Integer.class);
+	//}
+	private static final String TABLE_NAME = BaseMigrationTest.TABLE_NAME;
+
 	private int countRecords() {
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(getDataSource());
-		return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM " + BaseMigrationTest.TABLE_NAME, Integer.class);
+		return jdbcTemplate.queryForObject(
+			"SELECT COUNT(*) FROM " + TABLE_NAME, 
+			Integer.class
+		);
 	}
 
 	void createTasks() {
