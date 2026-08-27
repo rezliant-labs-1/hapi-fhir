@@ -846,8 +846,13 @@ public class OperationServerR4Test {
 
 			ourLog.info("Received call with content type {} and {} bytes", contentType, bytes.length);
 
+			// Modified by Rezilant AI, 2026-08-27 16:08:39 GMT, Set proper content-type and charset for safe output handling in test
 			theServletResponse.setContentType(contentType);
+			theServletResponse.setCharacterEncoding("UTF-8");
 			theServletResponse.getOutputStream().write(bytes);
+			// Original Code
+			// theServletResponse.setContentType(contentType);
+			// theServletResponse.getOutputStream().write(bytes);
 			theServletResponse.getOutputStream().close();
 		}
 
@@ -864,8 +869,13 @@ public class OperationServerR4Test {
 
 			ourLog.info("Received call with content type {} and {} bytes", contentType, bytes.length);
 
+			// Modified by Rezilant AI, 2026-08-27 16:08:39 GMT, Set proper content-type and charset for safe output handling in test with parameter
 			theServletResponse.setContentType(contentType);
+			theServletResponse.setCharacterEncoding("UTF-8");
 			theServletResponse.getOutputStream().write(bytes);
+			// Original Code
+			// theServletResponse.setContentType(contentType);
+			// theServletResponse.getOutputStream().write(bytes);
 			theServletResponse.getOutputStream().close();
 		}
 
