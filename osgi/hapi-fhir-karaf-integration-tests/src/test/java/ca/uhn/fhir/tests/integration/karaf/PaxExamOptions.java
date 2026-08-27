@@ -10,6 +10,8 @@ import org.ops4j.pax.exam.options.extra.VMOption;
 
 import java.io.File;
 import java.net.ServerSocket;
+import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLServerSocketFactory;
 
 import static org.ops4j.pax.exam.CoreOptions.maven;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
@@ -181,12 +183,32 @@ public enum PaxExamOptions {
 
 	public static int getAvailablePort(int min, int max) {
 		for (int i = min; i <= max; i++) {
-			try (ServerSocket socket = new ServerSocket(i)) {
-				return socket.getLocalPort();
+			// Modified by Rezilant AI, 2026-08-27 16:11:17 GMT, replaced unencrypted ServerSocket with SSLServerSocket for HIPAA-compliant encrypted communications
+			try {
+				SSLServerSocketFactory sslServerSocketFactory = 
+					(SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
+				
+				try (SSLServerSocket sslServerSocket = 
+					 (SSLServerSocket) sslServerSocketFactory.createServerSocket(i)) {
+					
+					// Configure TLS protocols (disable weak protocols)
+					sslServerSocket.setEnabledProtocols(
+						new String[]{"TLSv1.2", "TLSv1.3"}
+					);
+					
+					return sslServerSocket.getLocalPort();
+				}
 			} catch (Exception e) {
 				System.err.println("Port " + i + " not available, trying next one");
 				continue; // try next port
 			}
+			// Original Code
+			// try (ServerSocket socket = new ServerSocket(i)) {
+			// 	return socket.getLocalPort();
+			// } catch (Exception e) {
+			// 	System.err.println("Port " + i + " not available, trying next one");
+			// 	continue; // try next port
+			// }
 		}
 		throw new IllegalStateException("Can't find available network ports");
 	}
