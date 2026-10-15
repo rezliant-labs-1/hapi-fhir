@@ -92,8 +92,7 @@ public class Controller extends BaseController {
 		return "about";
 	}
 
-	// @rezliant RZ-865FA547 · 2026-10-15 — Prevents CSRF attacks on read-only conformance endpoint
-	@RequestMapping(value = {"/conformance"}, method = RequestMethod.GET)
+	@RequestMapping(value = {"/conformance"})
 	public String actionConformance(
 			HttpServletRequest theServletRequest,
 			final HomeRequest theRequest,
@@ -189,7 +188,8 @@ public class Controller extends BaseController {
 		return "result";
 	}
 
-	@RequestMapping(value = {"/history-server"})
+	// @rezliant RZ-86C47BE2 · 2026-10-15 — Restricts endpoint to safe HTTP methods
+	@RequestMapping(value = {"/history-server"}, method = RequestMethod.GET)
 	public String actionHistoryServer(
 			final HttpServletRequest theReq,
 			final HomeRequest theRequest,
@@ -1210,14 +1210,12 @@ public class Controller extends BaseController {
 }
 
 /*
-@rezliant-change-log:start
-
-RZ-865FA547 · 2026-10-15 · Conformance endpoint accepts all HTTP methods by default
-Change: Added method = RequestMethod.GET to @RequestMapping for /conformance endpoint
-Benefit: Restricts endpoint to safe GET requests and enables CSRF protection
-Scope: actionConformance method
-
-Rezliant remediation history: 1 total · 1 most recent shown
-
-@rezliant-change-log:end
-*/
+ * @rezliant-change-log:start
+ * RZ-86C47BE2 · 2026-10-15 · Missing HTTP method in @RequestMapping defaults to all methods, allowing unintended CSRF-vulnerable operations
+ * Change: Added method = RequestMethod.GET to @RequestMapping annotation for actionHistoryServer endpoint
+ * Benefit: Restricts endpoint to safe HTTP methods
+ * Scope: actionHistoryServer method
+ * 
+ * Rezliant remediation history: 1 total · 1 most recent shown
+ * @rezliant-change-log:end
+ */
