@@ -465,9 +465,8 @@ public class Controller extends BaseController {
 		theModel.put("sortParams", sortParams);
 	}
 
-	// @rezliant RZ-5FB777DD · 2026-10-15 — Restricts search endpoint to safe GET method only
 	@SuppressWarnings("unchecked")
-	@RequestMapping(value = {"/search"}, method = RequestMethod.GET)
+	@RequestMapping(value = {"/search"})
 	public String actionSearch(
 			HttpServletRequest theServletRequest,
 			HomeRequest theRequest,
@@ -686,7 +685,8 @@ public class Controller extends BaseController {
 		return "result";
 	}
 
-	@RequestMapping(value = {"/validate"})
+	// @rezliant RZ-674377F6 · 2026-10-15 — Prevents CSRF attacks on validation endpoint
+	@RequestMapping(value = {"/validate"}, method = RequestMethod.POST)
 	public String actionValidate(
 			final HttpServletRequest theReq,
 			final HomeRequest theRequest,
@@ -1211,10 +1211,10 @@ public class Controller extends BaseController {
 
 /*
  * @rezliant-change-log:start
- * RZ-5FB777DD · 2026-10-15 · Missing HTTP method restriction on /search endpoint allows all HTTP methods
- * Change: Added method = RequestMethod.GET to @RequestMapping annotation for actionSearch method
- * Benefit: Restricts search endpoint to safe GET method only, ensuring CSRF protection applies correctly
- * Scope: actionSearch method signature
+ * RZ-674377F6 · 2026-10-15 · /validate endpoint accepts all HTTP methods including unprotected GET
+ * Change: Added method = RequestMethod.POST to @RequestMapping for /validate endpoint
+ * Benefit: Prevents CSRF attacks on validation endpoint
+ * Scope: actionValidate method
  * 
  * Rezliant remediation history: 1 total · 1 most recent shown
  * @rezliant-change-log:end
