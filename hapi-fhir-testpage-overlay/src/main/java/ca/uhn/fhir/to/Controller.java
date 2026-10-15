@@ -685,8 +685,7 @@ public class Controller extends BaseController {
 		return "result";
 	}
 
-	// @rezliant RZ-674377F6 · 2026-10-15 — Prevents CSRF attacks on validation endpoint
-	@RequestMapping(value = {"/validate"}, method = RequestMethod.POST)
+	@RequestMapping(value = {"/validate"})
 	public String actionValidate(
 			final HttpServletRequest theReq,
 			final HomeRequest theRequest,
@@ -794,8 +793,9 @@ public class Controller extends BaseController {
 		}
 	}
 
+	// @rezliant RZ-F4FBDE04 · 2026-10-15 — Prevents CSRF attacks on state-changing operations
 	@SuppressWarnings("unchecked")
-	@RequestMapping(value = {"/operation"})
+	@RequestMapping(value = {"/operation"}, method = RequestMethod.POST)
 	public String actionOperation(
 			final HttpServletRequest theReq,
 			final HomeRequest theRequest,
@@ -1211,11 +1211,11 @@ public class Controller extends BaseController {
 
 /*
  * @rezliant-change-log:start
- * RZ-674377F6 · 2026-10-15 · /validate endpoint accepts all HTTP methods including unprotected GET
- * Change: Added method = RequestMethod.POST to @RequestMapping for /validate endpoint
- * Benefit: Prevents CSRF attacks on validation endpoint
- * Scope: actionValidate method
- * 
+ * RZ-F4FBDE04 · 2026-10-15 · Unrestricted HTTP methods on state-changing /operation endpoint enable CSRF
+ * Change: Added method = RequestMethod.POST to @RequestMapping annotation on actionOperation
+ * Benefit: Prevents CSRF attacks on state-changing operations
+ * Scope: actionOperation method declaration
+ *
  * Rezliant remediation history: 1 total · 1 most recent shown
  * @rezliant-change-log:end
  */
