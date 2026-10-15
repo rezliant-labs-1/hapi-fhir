@@ -79,8 +79,7 @@ public class Controller extends BaseController {
 	static final org.slf4j.Logger ourLog = org.slf4j.LoggerFactory.getLogger(Controller.class);
 	public static final int ROW_LIMIT = 200;
 
-	// @rezliant RZ-92C78650 · 2026-10-15 — Restricts endpoint to GET to prevent CSRF bypass
-	@RequestMapping(value = {"/about"}, method = RequestMethod.GET)
+	@RequestMapping(value = {"/about"})
 	public String actionAbout(
 			HttpServletRequest theServletRequest, final HomeRequest theRequest, final ModelMap theModel) {
 		addCommonParams(theServletRequest, theRequest, theModel);
@@ -93,7 +92,8 @@ public class Controller extends BaseController {
 		return "about";
 	}
 
-	@RequestMapping(value = {"/conformance"})
+	// @rezliant RZ-865FA547 · 2026-10-15 — Prevents CSRF attacks on read-only conformance endpoint
+	@RequestMapping(value = {"/conformance"}, method = RequestMethod.GET)
 	public String actionConformance(
 			HttpServletRequest theServletRequest,
 			final HomeRequest theRequest,
@@ -1210,13 +1210,14 @@ public class Controller extends BaseController {
 }
 
 /*
- * @rezliant-change-log:start
- * 
- * RZ-92C78650 · 2026-10-15 · @RequestMapping on /about endpoint accepts all HTTP methods, bypassing CSRF protection
- * Change: Added method = RequestMethod.GET to @RequestMapping annotation
- * Benefit: Restricts endpoint to safe GET method, preventing potential CSRF attacks
- * Scope: actionAbout method annotation
- * 
- * Rezliant remediation history: 1 total · 1 most recent shown
- * @rezliant-change-log:end
- */
+@rezliant-change-log:start
+
+RZ-865FA547 · 2026-10-15 · Conformance endpoint accepts all HTTP methods by default
+Change: Added method = RequestMethod.GET to @RequestMapping for /conformance endpoint
+Benefit: Restricts endpoint to safe GET requests and enables CSRF protection
+Scope: actionConformance method
+
+Rezliant remediation history: 1 total · 1 most recent shown
+
+@rezliant-change-log:end
+*/
