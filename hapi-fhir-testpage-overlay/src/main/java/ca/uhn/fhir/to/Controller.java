@@ -261,8 +261,7 @@ public class Controller extends BaseController {
 		return "result";
 	}
 
-	// @rezliant RZ-5657CD4B · 2026-10-15 — Restricts read endpoint to GET requests
-	@RequestMapping(value = {"/read"}, method = RequestMethod.GET)
+	@RequestMapping(value = {"/read"})
 	public String actionRead(
 			HttpServletRequest theServletRequest,
 			HomeRequest theRequest,
@@ -466,8 +465,9 @@ public class Controller extends BaseController {
 		theModel.put("sortParams", sortParams);
 	}
 
+	// @rezliant RZ-5FB777DD · 2026-10-15 — Restricts search endpoint to safe GET method only
 	@SuppressWarnings("unchecked")
-	@RequestMapping(value = {"/search"})
+	@RequestMapping(value = {"/search"}, method = RequestMethod.GET)
 	public String actionSearch(
 			HttpServletRequest theServletRequest,
 			HomeRequest theRequest,
@@ -1211,10 +1211,10 @@ public class Controller extends BaseController {
 
 /*
  * @rezliant-change-log:start
- * RZ-5657CD4B · 2026-10-15 · @RequestMapping missing method declaration for /read endpoint
- * Change: Added method = RequestMethod.GET to @RequestMapping annotation
- * Benefit: Restricts read endpoint to GET requests
- * Scope: actionRead method
+ * RZ-5FB777DD · 2026-10-15 · Missing HTTP method restriction on /search endpoint allows all HTTP methods
+ * Change: Added method = RequestMethod.GET to @RequestMapping annotation for actionSearch method
+ * Benefit: Restricts search endpoint to safe GET method only, ensuring CSRF protection applies correctly
+ * Scope: actionSearch method signature
  * 
  * Rezliant remediation history: 1 total · 1 most recent shown
  * @rezliant-change-log:end
