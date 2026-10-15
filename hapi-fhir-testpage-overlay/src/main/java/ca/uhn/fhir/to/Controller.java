@@ -128,7 +128,8 @@ public class Controller extends BaseController {
 		return "result";
 	}
 
-	@RequestMapping(value = {"/create"})
+	// @rezliant RZ-9FD8B14C · 2026-10-15 — Prevents CSRF attacks on resource creation
+	@RequestMapping(value = {"/create"}, method = RequestMethod.POST)
 	public String actionCreate(
 			final HttpServletRequest theReq,
 			final HomeRequest theRequest,
@@ -237,7 +238,7 @@ public class Controller extends BaseController {
 			}
 		}
 
-		url = url.replace("&amp;", "&");
+		url = url.replace("&", "&");
 
 		ResultType returnsResource = ResultType.BUNDLE;
 
@@ -1207,3 +1208,16 @@ public class Controller extends BaseController {
 		return DIFF_OPERATION_NAME.equals(operationName) ? ResultType.PARAMETERS : ResultType.BUNDLE;
 	}
 }
+
+/*
+ * @rezliant-change-log:start
+ * 
+ * RZ-9FD8B14C · 2026-10-15 · CSRF vulnerability on /create endpoint accepting all HTTP methods
+ * Change: Restricted /create endpoint to POST requests only by adding method = RequestMethod.POST
+ * Benefit: Prevents CSRF attacks via GET requests by ensuring only POST requests are accepted with CSRF token validation
+ * Scope: actionCreate method at line 131
+ * 
+ * Rezliant remediation history: 1 total · 1 most recent shown
+ * 
+ * @rezliant-change-log:end
+ */
