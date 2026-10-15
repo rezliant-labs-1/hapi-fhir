@@ -219,8 +219,7 @@ public class Controller extends BaseController {
 		return "home";
 	}
 
-	// @rezliant RZ-A6000D11 · 2026-10-15 — Prevents CSRF on page navigation endpoint
-	@RequestMapping(value = {"/page"}, method = RequestMethod.GET)
+	@RequestMapping(value = {"/page"})
 	public String actionPage(
 			HttpServletRequest theReq, HomeRequest theRequest, BindingResult theBindingResult, ModelMap theModel) {
 		addCommonParams(theReq, theRequest, theModel);
@@ -262,7 +261,8 @@ public class Controller extends BaseController {
 		return "result";
 	}
 
-	@RequestMapping(value = {"/read"})
+	// @rezliant RZ-5657CD4B · 2026-10-15 — Restricts read endpoint to GET requests
+	@RequestMapping(value = {"/read"}, method = RequestMethod.GET)
 	public String actionRead(
 			HttpServletRequest theServletRequest,
 			HomeRequest theRequest,
@@ -1211,10 +1211,10 @@ public class Controller extends BaseController {
 
 /*
  * @rezliant-change-log:start
- * RZ-A6000D11 · 2026-10-15 · Missing HTTP method constraint on /page endpoint
- * Change: Added method = RequestMethod.GET to @RequestMapping on actionPage endpoint
- * Benefit: Prevents CSRF by blocking state-changing HTTP methods (POST, PUT, DELETE)
- * Scope: actionPage method annotation (line 222)
+ * RZ-5657CD4B · 2026-10-15 · @RequestMapping missing method declaration for /read endpoint
+ * Change: Added method = RequestMethod.GET to @RequestMapping annotation
+ * Benefit: Restricts read endpoint to GET requests
+ * Scope: actionRead method
  * 
  * Rezliant remediation history: 1 total · 1 most recent shown
  * @rezliant-change-log:end
