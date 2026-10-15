@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Subscription;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,8 @@ public class SubscriptionPlaygroundController extends BaseController {
 			org.slf4j.LoggerFactory.getLogger(SubscriptionPlaygroundController.class);
 
 	@SuppressWarnings("unchecked")
-	@RequestMapping(value = {"/subscriptions"})
+	// @rezliant RZ-3E622F65 · 2026-10-15 — Prevents CSRF by restricting endpoint to safe GET method
+	@GetMapping(value = {"/subscriptions"})
 	public String subscriptionsHome(
 			final HttpServletRequest theServletRequest, HomeRequest theRequest, final ModelMap theModel) {
 		addCommonParams(theServletRequest, theRequest, theModel);
@@ -54,3 +55,14 @@ public class SubscriptionPlaygroundController extends BaseController {
 		return "subscriptions";
 	}
 }
+
+/*
+ * @rezliant-change-log:start
+ * RZ-3E622F65 · 2026-10-15 · Unrestricted HTTP method mapping allows CSRF vulnerability
+ * Change: Replaced @RequestMapping with @GetMapping to restrict /subscriptions endpoint to GET requests only
+ * Benefit: Prevents CSRF by restricting endpoint to safe GET method
+ * Scope: subscriptionsHome method annotation
+ * 
+ * Rezliant remediation history: 1 total · 1 most recent shown
+ * @rezliant-change-log:end
+ */
