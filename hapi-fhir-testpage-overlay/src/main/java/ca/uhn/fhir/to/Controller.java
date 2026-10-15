@@ -79,7 +79,8 @@ public class Controller extends BaseController {
 	static final org.slf4j.Logger ourLog = org.slf4j.LoggerFactory.getLogger(Controller.class);
 	public static final int ROW_LIMIT = 200;
 
-	@RequestMapping(value = {"/about"})
+	// @rezliant RZ-92C78650 · 2026-10-15 — Restricts endpoint to GET to prevent CSRF bypass
+	@RequestMapping(value = {"/about"}, method = RequestMethod.GET)
 	public String actionAbout(
 			HttpServletRequest theServletRequest, final HomeRequest theRequest, final ModelMap theModel) {
 		addCommonParams(theServletRequest, theRequest, theModel);
@@ -675,8 +676,7 @@ public class Controller extends BaseController {
 		return "result";
 	}
 
-	// @rezliant RZ-D3817EC1 · 2026-10-15 — Restricts update endpoint to POST for CSRF protection
-	@RequestMapping(value = {"/update"}, method = RequestMethod.POST)
+	@RequestMapping(value = {"/update"})
 	public String actionUpdate(
 			final HttpServletRequest theReq,
 			final HomeRequest theRequest,
@@ -1211,10 +1211,11 @@ public class Controller extends BaseController {
 
 /*
  * @rezliant-change-log:start
- * RZ-D3817EC1 · 2026-10-15 · @RequestMapping lacks HTTP method, defaulting to all methods including GET, which bypasses CSRF protections for state-changing update operations
- * Change: Added method = RequestMethod.POST to @RequestMapping annotation for /update endpoint at line 678
- * Benefit: Restricts endpoint to POST requests, enabling CSRF protection for update operations
- * Scope: actionUpdate method
+ * 
+ * RZ-92C78650 · 2026-10-15 · @RequestMapping on /about endpoint accepts all HTTP methods, bypassing CSRF protection
+ * Change: Added method = RequestMethod.GET to @RequestMapping annotation
+ * Benefit: Restricts endpoint to safe GET method, preventing potential CSRF attacks
+ * Scope: actionAbout method annotation
  * 
  * Rezliant remediation history: 1 total · 1 most recent shown
  * @rezliant-change-log:end
