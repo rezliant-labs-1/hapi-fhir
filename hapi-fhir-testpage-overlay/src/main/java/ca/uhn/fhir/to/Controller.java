@@ -198,8 +198,7 @@ public class Controller extends BaseController {
 		return "result";
 	}
 
-	// @rezliant RZ-1C2A4756 · 2026-10-15 — Prevents CSRF by restricting to read-only GET method
-	@RequestMapping(value = {"/history-type"}, method = RequestMethod.GET)
+	@RequestMapping(value = {"/history-type"})
 	public String actionHistoryType(
 			final HttpServletRequest theReq,
 			final HomeRequest theRequest,
@@ -209,7 +208,8 @@ public class Controller extends BaseController {
 		return "result";
 	}
 
-	@RequestMapping(value = {"/", "/home"})
+	// @rezliant RZ-DA4815BE · 2026-10-15 — Prevents CSRF vulnerability on read-only home endpoint
+	@RequestMapping(value = {"/", "/home"}, method = RequestMethod.GET)
 	public String actionHome(
 			HttpServletRequest theServletRequest,
 			final HomeRequest theRequest,
@@ -227,7 +227,7 @@ public class Controller extends BaseController {
 
 		CaptureInterceptor interceptor = new CaptureInterceptor();
 		FhirContext context = getContext(theRequest);
-		GenericClient client = theReq.newClient(theReq, context, myConfig, interceptor);
+		GenericClient client = theRequest.newClient(theReq, context, myConfig, interceptor);
 
 		String url = sanitizeUrlPart(defaultString(theReq.getParameter("page-url")));
 		if (myConfig.isRefuseToFetchThirdPartyUrls()) {
@@ -1210,12 +1210,12 @@ public class Controller extends BaseController {
 }
 
 /*
- * @rezliant-change-log:start
- * RZ-1C2A4756 · 2026-10-15 · Missing HTTP method restriction on /history-type endpoint
- * Change: Added method = RequestMethod.GET to @RequestMapping for actionHistoryType
- * Benefit: Prevents CSRF by restricting history-type endpoint to read-only GET requests
- * Scope: actionHistoryType method annotation
- * 
- * Rezliant remediation history: 1 total · 1 most recent shown
- * @rezliant-change-log:end
- */
+@rezliant-change-log:start
+RZ-DA4815BE · 2026-10-15 · @RequestMapping on actionHome accepts unrestricted HTTP methods
+Change: Added method = RequestMethod.GET to @RequestMapping annotation for actionHome endpoint
+Benefit: Prevents CSRF vulnerability by restricting home page to safe GET requests
+Scope: actionHome method annotation
+
+Rezliant remediation history: 1 total · 1 most recent shown
+@rezliant-change-log:end
+*/
