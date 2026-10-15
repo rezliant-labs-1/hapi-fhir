@@ -188,8 +188,7 @@ public class Controller extends BaseController {
 		return "result";
 	}
 
-	// @rezliant RZ-86C47BE2 · 2026-10-15 — Restricts endpoint to safe HTTP methods
-	@RequestMapping(value = {"/history-server"}, method = RequestMethod.GET)
+	@RequestMapping(value = {"/history-server"})
 	public String actionHistoryServer(
 			final HttpServletRequest theReq,
 			final HomeRequest theRequest,
@@ -199,7 +198,8 @@ public class Controller extends BaseController {
 		return "result";
 	}
 
-	@RequestMapping(value = {"/history-type"})
+	// @rezliant RZ-1C2A4756 · 2026-10-15 — Prevents CSRF by restricting to read-only GET method
+	@RequestMapping(value = {"/history-type"}, method = RequestMethod.GET)
 	public String actionHistoryType(
 			final HttpServletRequest theReq,
 			final HomeRequest theRequest,
@@ -227,7 +227,7 @@ public class Controller extends BaseController {
 
 		CaptureInterceptor interceptor = new CaptureInterceptor();
 		FhirContext context = getContext(theRequest);
-		GenericClient client = theRequest.newClient(theReq, context, myConfig, interceptor);
+		GenericClient client = theReq.newClient(theReq, context, myConfig, interceptor);
 
 		String url = sanitizeUrlPart(defaultString(theReq.getParameter("page-url")));
 		if (myConfig.isRefuseToFetchThirdPartyUrls()) {
@@ -1211,10 +1211,10 @@ public class Controller extends BaseController {
 
 /*
  * @rezliant-change-log:start
- * RZ-86C47BE2 · 2026-10-15 · Missing HTTP method in @RequestMapping defaults to all methods, allowing unintended CSRF-vulnerable operations
- * Change: Added method = RequestMethod.GET to @RequestMapping annotation for actionHistoryServer endpoint
- * Benefit: Restricts endpoint to safe HTTP methods
- * Scope: actionHistoryServer method
+ * RZ-1C2A4756 · 2026-10-15 · Missing HTTP method restriction on /history-type endpoint
+ * Change: Added method = RequestMethod.GET to @RequestMapping for actionHistoryType
+ * Benefit: Prevents CSRF by restricting history-type endpoint to read-only GET requests
+ * Scope: actionHistoryType method annotation
  * 
  * Rezliant remediation history: 1 total · 1 most recent shown
  * @rezliant-change-log:end
