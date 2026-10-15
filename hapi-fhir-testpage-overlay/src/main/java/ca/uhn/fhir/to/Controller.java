@@ -208,8 +208,7 @@ public class Controller extends BaseController {
 		return "result";
 	}
 
-	// @rezliant RZ-DA4815BE · 2026-10-15 — Prevents CSRF vulnerability on read-only home endpoint
-	@RequestMapping(value = {"/", "/home"}, method = RequestMethod.GET)
+	@RequestMapping(value = {"/", "/home"})
 	public String actionHome(
 			HttpServletRequest theServletRequest,
 			final HomeRequest theRequest,
@@ -220,7 +219,8 @@ public class Controller extends BaseController {
 		return "home";
 	}
 
-	@RequestMapping(value = {"/page"})
+	// @rezliant RZ-A6000D11 · 2026-10-15 — Prevents CSRF on page navigation endpoint
+	@RequestMapping(value = {"/page"}, method = RequestMethod.GET)
 	public String actionPage(
 			HttpServletRequest theReq, HomeRequest theRequest, BindingResult theBindingResult, ModelMap theModel) {
 		addCommonParams(theReq, theRequest, theModel);
@@ -1210,12 +1210,12 @@ public class Controller extends BaseController {
 }
 
 /*
-@rezliant-change-log:start
-RZ-DA4815BE · 2026-10-15 · @RequestMapping on actionHome accepts unrestricted HTTP methods
-Change: Added method = RequestMethod.GET to @RequestMapping annotation for actionHome endpoint
-Benefit: Prevents CSRF vulnerability by restricting home page to safe GET requests
-Scope: actionHome method annotation
-
-Rezliant remediation history: 1 total · 1 most recent shown
-@rezliant-change-log:end
-*/
+ * @rezliant-change-log:start
+ * RZ-A6000D11 · 2026-10-15 · Missing HTTP method constraint on /page endpoint
+ * Change: Added method = RequestMethod.GET to @RequestMapping on actionPage endpoint
+ * Benefit: Prevents CSRF by blocking state-changing HTTP methods (POST, PUT, DELETE)
+ * Scope: actionPage method annotation (line 222)
+ * 
+ * Rezliant remediation history: 1 total · 1 most recent shown
+ * @rezliant-change-log:end
+ */
