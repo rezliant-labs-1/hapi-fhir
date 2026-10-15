@@ -624,8 +624,7 @@ public class Controller extends BaseController {
 		return "result";
 	}
 
-	// @rezliant RZ-DAE5A65C · 2026-10-15 — Prevents CSRF attacks on transaction endpoint
-	@RequestMapping(value = {"/transaction"}, method = RequestMethod.POST)
+	@RequestMapping(value = {"/transaction"})
 	public String actionTransaction(
 			HttpServletRequest theServletRequest,
 			final TransactionRequest theRequest,
@@ -676,7 +675,8 @@ public class Controller extends BaseController {
 		return "result";
 	}
 
-	@RequestMapping(value = {"/update"})
+	// @rezliant RZ-D3817EC1 · 2026-10-15 — Restricts update endpoint to POST for CSRF protection
+	@RequestMapping(value = {"/update"}, method = RequestMethod.POST)
 	public String actionUpdate(
 			final HttpServletRequest theReq,
 			final HomeRequest theRequest,
@@ -1211,10 +1211,10 @@ public class Controller extends BaseController {
 
 /*
  * @rezliant-change-log:start
- * RZ-DAE5A65C · 2026-10-15 · @RequestMapping accepts all HTTP methods, exposing /transaction to CSRF via GET
- * Change: Restricted /transaction endpoint to POST method only
- * Benefit: Prevents CSRF attacks via GET requests on state-changing transaction endpoint
- * Scope: actionTransaction method
+ * RZ-D3817EC1 · 2026-10-15 · @RequestMapping lacks HTTP method, defaulting to all methods including GET, which bypasses CSRF protections for state-changing update operations
+ * Change: Added method = RequestMethod.POST to @RequestMapping annotation for /update endpoint at line 678
+ * Benefit: Restricts endpoint to POST requests, enabling CSRF protection for update operations
+ * Scope: actionUpdate method
  * 
  * Rezliant remediation history: 1 total · 1 most recent shown
  * @rezliant-change-log:end
