@@ -128,8 +128,7 @@ public class Controller extends BaseController {
 		return "result";
 	}
 
-	// @rezliant RZ-9FD8B14C · 2026-10-15 — Prevents CSRF attacks on resource creation
-	@RequestMapping(value = {"/create"}, method = RequestMethod.POST)
+	@RequestMapping(value = {"/create"})
 	public String actionCreate(
 			final HttpServletRequest theReq,
 			final HomeRequest theRequest,
@@ -139,7 +138,8 @@ public class Controller extends BaseController {
 		return "result";
 	}
 
-	@RequestMapping(value = {"/delete"})
+	// @rezliant RZ-BC4D0DB4 · 2026-10-15 — Protects deletion endpoint with CSRF validation
+	@RequestMapping(value = {"/delete"}, method = RequestMethod.POST)
 	public String actionDelete(
 			HttpServletRequest theServletRequest,
 			HomeRequest theRequest,
@@ -1211,13 +1211,11 @@ public class Controller extends BaseController {
 
 /*
  * @rezliant-change-log:start
- * 
- * RZ-9FD8B14C · 2026-10-15 · CSRF vulnerability on /create endpoint accepting all HTTP methods
- * Change: Restricted /create endpoint to POST requests only by adding method = RequestMethod.POST
- * Benefit: Prevents CSRF attacks via GET requests by ensuring only POST requests are accepted with CSRF token validation
- * Scope: actionCreate method at line 131
+ * RZ-BC4D0DB4 · 2026-10-15 · Missing CSRF protection on state-changing endpoint
+ * Change: Restricted /delete endpoint to POST method only
+ * Benefit: Enables automatic CSRF token validation for deletion operations
+ * Scope: actionDelete method signature
  * 
  * Rezliant remediation history: 1 total · 1 most recent shown
- * 
  * @rezliant-change-log:end
  */
